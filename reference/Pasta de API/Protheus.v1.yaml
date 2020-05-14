@@ -141,8 +141,6 @@ paths:
                   value:
                     resultCode: '000'
                     resultMessage: Rotina automática executada com sucesso.
-        '201':
-          description: ''
         '400':
           description: Bad Request
         '500':

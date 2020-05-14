@@ -5,4 +5,4 @@ Em outras palavras, a requisição atravessa a [camada de registro](https://stop
 
 As respostas voltam do Protheus para o AtechESB e são redirecionadas, sem alteração, para o cliente. Portanto, os retornos recebidos são os mesmos gerados pela [camada Protheus](https://stoplight.io/p/docs/gh/atechgustavo/AtechExecAuto).
 
-Consulte os possíveis [retornos do AtechExecAuto](https://stoplight.io/p/docs/gh/atechgustavo/AtechExecAuto).
+Consulte os possíveis [retornos do AtechExecAuto](https://stoplight.io/p/docs/gh/atechgustavo/atechexecauto/docs/Retornos.md).
