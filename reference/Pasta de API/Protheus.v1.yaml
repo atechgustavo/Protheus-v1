@@ -102,6 +102,8 @@ paths:
                   quantidade: 3.5
                   gerarEmpenhos: false
         description: Corpo da requisição informando os dados da OP a ser criada.
+      tags:
+        - Ordens de produção
   /OrdemProducao/Excluir:
     parameters: []
     post:
@@ -177,6 +179,7 @@ paths:
                   quantidade: 3.5
                   gerarEmpenhos: false
         description: Corpo da requisição identificando a OP a ser excluída.
-  /OrdemProducao: {}
+      tags:
+        - Ordens de produção
 components:
   schemas: {}

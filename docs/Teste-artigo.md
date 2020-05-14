@@ -1,3 +1,0 @@
-# Teste-artigo
-
-The beginning of an awesome article...
