@@ -3,11 +3,18 @@ info:
   title: Protheus API
   version: '1.0'
   description: |-
-    Esta API é uma coleção de métodos para execução de operações no ERP TOTVS Protheus.
-    Baseia-se nas API's SyncMessage (AtechESB Core) e AtechExecAuto (Protheus).
+    O conjunto de API's especialistas está hospedado no Talend ESB Runtime Container, instalado no SRV-INTEGRA.atech.local.
+    Existem 3 ambientes.
+  contact:
+    name: Gustavo Regal
+    email: gustavo@automatech.com.br
 servers:
   - url: 'http://SRV-INTEGRA:8240.atech.local/services/Protheus/v1'
-    description: Protheus API
+    description: DEV
+  - url: 'http://SRV-INTEGRA:8140.atech.local/services/Protheus/v1'
+    description: HML
+  - url: 'http://SRV-INTEGRA:8040.atech.local/services/Protheus/v1'
+    description: PROD
 paths:
   /OrdemProducao/Criar:
     parameters: []
@@ -57,51 +64,54 @@ paths:
                   description: 'Formato "01"'
                 filial:
                   type: string
-                  description: 'Formato "01"'
+                  description: 'Formato "01" (C2_FILIAL)'
                 codigoProduto:
                   type: string
-                  description: Código do produto no cadastro Protheus (B1_COD)
+                  description: Código do produto no cadastro Protheus (C2_PRODUTO)
                 quantidade:
                   type: number
-                  description: Quantidade a ser produzida
+                  description: Quantidade a ser produzida (C2_QUANT)
                 previsaoInicio:
                   type: string
-                  description: 'Data no formato dd/MM/aaaa. Se omitido, é utilizada a data atual do sistema.'
+                  description: 'Data no formato dd/MM/aaaa. Se omitido, é utilizada a data atual do sistema (C2_DATPRI).'
                 previsaoFim:
                   type: string
-                  description: 'Data no formato dd/MM/aaaa. Se omitido, é utilizada a data atual do sistema.'
+                  description: 'Data no formato dd/MM/aaaa. Se omitido, é utilizada a data atual do sistema (C2_DATPRF).'
                 armazem:
                   type: string
                   description: 'Código do armazém no Protheus (campo C2_LOCAL). Se omitido, é usado "01".'
                 prioridade:
                   type: string
-                  description: 'Campo C2_PRIOR. Se omitido, é utilizado o padrão "500".'
+                  description: 'Se omitido, é utilizado o padrão "500" (C2_PRIOR).'
                 gerarEmpenhos:
                   type: boolean
-                  description: 'Indica se o Protheus deve gerar automaticamente os empenhos para a OP, baseado no cadastro de estrutura de produtos (SG1). Se omitido, é considerado falso.'
+                  description: 'Indica se o Protheus deve gerar automaticamente os empenhos para a OP, baseado no cadastro de estrutura de produtos (SG1). Se omitido, é considerado falso (parâmetro AUTEXPLODE).'
               required:
                 - empresa
                 - filial
                 - codigoProduto
                 - quantidade
             examples:
-              Exemplo 1:
+              Exemplo completo:
                 value:
                   empresa: '01'
                   filial: '01'
                   codigoProduto: '02010432630102641'
+                  previsaoInicio: 01/01/2020
                   previsaoFim: 31/12/2020
                   quantidade: 3.5
+                  prioridade: '500'
+                  armazem: '01'
                   gerarEmpenhos: false
-              Exemplo 2:
+              Exemplo essencial:
                 value:
                   empresa: '01'
                   filial: '01'
                   codigoProduto: '02010432630102641'
-                  previsaoFim: 31/12/2020
                   quantidade: 3.5
-                  gerarEmpenhos: false
-        description: Corpo da requisição informando os dados da OP a ser criada.
+        description: |-
+          Corpo da requisição informando os dados da OP a ser criada.
+          O método usa como data de emissão (C2_EMISSAO) a data atual do sistema conforme o servidor desta API.
       tags:
         - Ordens de produção
   /OrdemProducao/Excluir:
@@ -131,6 +141,8 @@ paths:
                   value:
                     resultCode: '000'
                     resultMessage: Rotina automática executada com sucesso.
+        '201':
+          description: ''
         '400':
           description: Bad Request
         '500':
@@ -147,7 +159,7 @@ paths:
                   description: 'Formato "01"'
                 filial:
                   type: string
-                  description: 'Formato "01"'
+                  description: 'Formato "01" (C2_FILIAL)'
                 numero:
                   type: string
                   description: Número da OP com 6 dígitos (C2_NUM)
@@ -162,22 +174,18 @@ paths:
                 - filial
                 - numero
             examples:
-              Exemplo 1:
+              Exemplo completo:
                 value:
                   empresa: '01'
                   filial: '01'
-                  codigoProduto: '02010432630102641'
-                  previsaoFim: 31/12/2020
-                  quantidade: 3.5
-                  gerarEmpenhos: false
-              Exemplo 2:
+                  numero: '057318'
+                  item: '01'
+                  sequencia: '001'
+              Exemplo essencial:
                 value:
                   empresa: '01'
                   filial: '01'
-                  codigoProduto: '02010432630102641'
-                  previsaoFim: 31/12/2020
-                  quantidade: 3.5
-                  gerarEmpenhos: false
+                  numero: '057318'
         description: Corpo da requisição identificando a OP a ser excluída.
       tags:
         - Ordens de produção
