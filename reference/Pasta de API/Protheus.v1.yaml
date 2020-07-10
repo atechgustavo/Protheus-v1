@@ -187,5 +187,268 @@ paths:
         description: Corpo da requisição identificando a OP a ser excluída.
       tags:
         - Ordens de produção
+  /Cliente/Criar:
+    post:
+      summary: Incluir cliente
+      operationId: post-Cliente-Criar
+      responses:
+        '200':
+          description: Cliente cadastrado com nova loja a código pré-existente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetornoSemNumeracaoAutomatica'
+        '201':
+          description: Cliente cadastrado com novo código
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetornoComNumeracaoAutomatica'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ambiente:
+                  $ref: '#/components/schemas/Ambiente'
+                nome:
+                  type: string
+                  description: 'Nome ou razão social do cliente [A1_NOME]'
+                nomeReduzido:
+                  type: string
+                  description: 'Nome fantasia ou nome reduzido pelo qual o cliente é mais conhecido dentro da empresa [A1_NREDUZ]'
+                pessoa:
+                  type: string
+                  description: 'Tipo de pessoa: (F)ísica ou (J)urídica [A1_PESSOA]'
+                  enum:
+                    - F
+                    - J
+                tipo:
+                  type: string
+                  description: 'Tipo de cliente: F - Consumidor (F)inal, Produtor Rura(L), (R)evendedor, ICMS (S)olidário sem IPI na base; E(X)portação. [A1_TIPO]'
+                  enum:
+                    - F
+                    - L
+                    - R
+                    - S
+                    - X
+                  example: F
+                CGC:
+                  type: string
+                  description: 'CNPJ ou CPF do cliente (somente dígitos) [A1_CGC]'
+                  example: '03385913000161'
+                IE:
+                  type: string
+                  description: 'Inscrição Estadual do cliente [A1_INSCR]'
+                IM:
+                  type: string
+                  description: 'Inscrição Municipal do cliente [A1_INSCRM]'
+                grupoVendas:
+                  type: string
+                  description: 'Código do grupo de vendas ao qual o cliente está associado [A1_GRPVEN]'
+                  example: '000088'
+                endereco:
+                  type: object
+                  description: Dados componentes do endereço do cliente
+                  required:
+                    - endereco
+                    - bairro
+                    - UF
+                    - codigoMunicipio
+                    - CEP
+                  properties:
+                    endereco:
+                      type: string
+                      description: 'Endereço do cliente contendo rua, número [A1_END]'
+                      example: 'AV. JOAO INACIO, 1110'
+                    complemento:
+                      type: string
+                      example: 'BLOCO 7, SALA 102'
+                      description: 'Dados complementares do endereço [A1_COMPLEM]'
+                    bairro:
+                      type: string
+                      example: CENTRO
+                      description: 'Nome do bairro [A1_BAIRRO]'
+                    UF:
+                      type: string
+                      example: RS
+                      description: 'Sigla do estado do cliente, com 2 letras [A1__EST],   [A1__ESTADO]'
+                    codigoMunicipio:
+                      type: string
+                      description: 'Código do município conforme cadastro do IBGE [A1__COD__MUN]'
+                      example: '14902'
+                    CEP:
+                      type: string
+                      example: '90230181'
+                      description: 'CEP do cliente (somente dígitos) [A1_CEP]'
+                contato:
+                  type: object
+                  required:
+                    - nome
+                    - email
+                    - DDD
+                    - telefone
+                  properties:
+                    nome:
+                      type: string
+                      description: Dados de contato do cliente
+                    email:
+                      type: string
+                      description: 'Nome da pessoa de contato principal [A1_NCONT]'
+                    DDD:
+                      type: string
+                      description: 'E-mail para envio de NF-e [A1_EMAIL]'
+                      example: '51'
+                    telefone:
+                      type: string
+                      description: 'DDD do número de contato [A1_DDD]'
+                      example: '995965533, 9.596-5533, ...'
+                financeiro:
+                  type: object
+                  description: 'Telefone de contato [A1_TEL]'
+                  required:
+                    - natureza
+                  properties:
+                    natureza:
+                      type: string
+                      description: 'Código da natureza financeira [A1_NATUREZ]'
+                      example: '10101'
+                    vendedor1:
+                      type: string
+                      example: '000501'
+                      description: 'Código do vendedor principal [A1_VEND]'
+                    vendedor2:
+                      type: string
+                      description: 'Código do vendedor de suprimentos [A1_ZVEND2]'
+                      example: '000500'
+                fiscal:
+                  type: object
+                  description: Dados fiscais do cliente
+                  required:
+                    - grupoTributario
+                    - contribuiICMS
+                  properties:
+                    grupoTributario:
+                      type: string
+                      description: 'Código do grupo tributário para tratamento em exceções fiscais (002=IE ativa, 003=Isento) [A1_GRPTRIB]'
+                      example: '002'
+                    contribuiICMS:
+                      type: boolean
+                      description: 'Cliente é contribuinte do ICMS sim/não (dado redundante em relação ao grupoTributario, porém necessário informar explicitamente) [A1_CONTRIB]'
+              required:
+                - ambiente
+                - nome
+                - nomeReduzido
+                - pessoa
+                - tipo
+                - CGC
+                - IE
+                - endereco
+                - contato
+                - financeiro
+                - fiscal
+            examples:
+              Exemplo de criação:
+                value:
+                  ambiente:
+                    empresa: '01'
+                    filial: '01'
+                  nome: TESTE A1_NOME VIA ATECHEXECAUTO 004
+                  nomeReduzido: A1_NREDUZ ATECHEXECA
+                  pessoa: J
+                  tipo: F
+                  CGC: '73881365000499'
+                  IE: '0534511007'
+                  IM: ''
+                  grupoVendas: '000088'
+                  endereco:
+                    endereco: 'TESTE A1_END ATECHEXECAUTO 001, N 123'
+                    complemento: SALA XYZ
+                    bairro: CENTRO
+                    UF: RS
+                    codigoMunicipio: '14902'
+                    CEP: '99999999'
+                  contato:
+                    nome: FULANO DE TAL
+                    email: '@'
+                    DDD: '51'
+                    telefone: '995965533'
+                  financeiro:
+                    natureza: '10101'
+                    vendedor1: '000500'
+                    vendedor2: '000501'
+                  fiscal:
+                    grupoTributario: '002'
+                    contribuiICMS: true
+        description: |-
+          Corpo da requisição informando os dados do cliente a ser cadastrado.
+          Diversos campos são alimentados no Protheus embora não sejam parâmetros desta API, já que o Protheus tem diversas definições de valores padrão ou definidos automaticamente por ponto de entrada, gatilho, etc.
+      description: 'Cria um cliente (tabela SA1) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.'
+      tags:
+        - Cliente
 components:
-  schemas: {}
+  schemas:
+    Ambiente:
+      title: Ambiente
+      type: object
+      properties:
+        empresa:
+          type: string
+          example: '01'
+          description: Código da empresa
+        filial:
+          type: string
+          example: '01'
+          description: Códi da filial
+      required:
+        - empresa
+        - filial
+      description: Dados para preparação de ambiente no Protheus. Corresponde ao login no sistema em uma empresa/filial.
+      x-tags:
+        - Modelos
+    RetornoComNumeracaoAutomatica:
+      title: Retorno com numeração automática
+      type: object
+      description: Retorno contendo numeração automática gerada pelo Protheus
+      x-examples:
+        Cadastro incluído:
+          resultId: '074460'
+          resultCode: '001'
+          resultMessage: Rotina automática executada com sucesso e com numeração automática gerada.
+      properties:
+        resultId:
+          type: string
+          description: Numeração automática gerada pelo Protheus para o novo registro inserido no banco de dados
+        resultCode:
+          type: string
+          description: Código de resultado conforme tabela de resultados possíveis (vide documentação AtechExecAuto)
+        resultMessage:
+          type: string
+          description: Mensagem descrevendo o resultado do processo
+      required:
+        - resultId
+        - resultCode
+        - resultMessage
+      x-tags:
+        - Modelos
+    RetornoSemNumeracaoAutomatica:
+      title: Retorno sem numeração automática
+      type: object
+      properties:
+        resultCode:
+          type: string
+          description: Código de resultado conforme tabela de resultados possíveis (vide documentação AtechExecAuto)
+        resultMessage:
+          type: string
+          description: Mensagem descrevendo o resultado do processo
+      required:
+        - resultCode
+        - resultMessage
+      description: Retorno da API baseada no AtechExecAuto
+      x-examples:
+        Sucesso:
+          resultCode: '000'
+          resultMessage: Rotina automática executada com sucesso.
+      x-tags:
+        - Modelos
