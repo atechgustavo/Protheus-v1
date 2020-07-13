@@ -301,6 +301,8 @@ paths:
                     email:
                       type: string
                       description: 'E-mail para envio de NF-e [A1_EMAIL]'
+                      format: email
+                      example: BAR@FOO.COM
                     DDD:
                       type: string
                       description: 'DDD do número de contato [A1_DDD]'
@@ -452,6 +454,8 @@ paths:
                     email:
                       type: string
                       description: 'E-mail para envio de NF-e [A1_EMAIL]'
+                      example: BAR@FOO.COM
+                      format: email
                     DDD:
                       type: string
                       description: 'DDD do número de contato [A1_DDD]'
@@ -470,6 +474,24 @@ paths:
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetornoComNumeracaoAutomatica'
+              examples:
+                Pedido criado:
+                  value:
+                    resultId: '290979'
+                    resultCode: '001'
+                    resultMessage: Rotina automática executada com sucesso e com numeração automática gerada.
+        '400':
+          description: Bad Request
+        '409':
+          description: Conflict
+        '422':
+          description: Unprocessable Entity (WebDAV)
+        '500':
+          description: Internal Server Error
       description: 'Inclui um pedido de venda (tabela SC5) com diversos itens (tabela SC6) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.'
       requestBody:
         content:
@@ -545,14 +567,21 @@ paths:
                       description: 'Forma de pagamento (1=Boleto) [C5_FORMA]'
                 intermediacao:
                   type: boolean
-                  description: 'Se é um pedido de intermediação (pedido agenciado), 1=Externo, 2=Interno [C5_EXTERNO]'
+                  description: 'Se é um pedido de intermediação (pedido agenciado) [C5_EXTERNO]'
+                  default: 'false'
                 frete:
                   type: object
                   description: Dados de frete
+                  required:
+                    - tipo
                   properties:
                     tipo:
                       type: string
-                      description: 'Tipo de frete: ""=Sem frete, C=CIF, F=FOB'
+                      description: 'Tipo de frete: C=CIF, F=FOB'
+                      enum:
+                        - C
+                        - F
+                      example: C
                     valor:
                       type: string
                       default: '0.0'
@@ -560,38 +589,50 @@ paths:
                     transportadora:
                       type: string
                       description: 'Código da transportadora [C5_TRANSP]'
+                      example: '000008'
                     tipoServico:
                       type: string
                       description: 'Tipo de serviço selecionado na transportadora [C5_TSRV]'
+                      example: CORREIOS 41068-PAC
                     intelipost:
                       type: object
                       description: Dados referentes ao uso da plataforma de gestão de frete Intelipost
                       properties:
                         idCotacao:
                           type: string
-                          description: Id da cotação realizada no Intelipiost
+                          description: 'Id da cotação realizada no Intelipost [C5_IPQID]'
                         idMetodoEnvio:
                           type: string
-                          description: Id do método de envio selecionado no Intelipost
+                          description: 'Id do método de envio selecionado no Intelipost [C5_IPDMID]'
                 vendedor1:
                   type: string
+                  description: 'Código do vendedor 1 [C5_VEND1]'
+                  example: '000500'
                 vendedor2:
                   type: string
+                  description: 'Código do vendedor 2 [C5_VEND2]'
+                  example: '000501'
                 propostaSM:
                   type: string
                   default: '-1'
+                  description: 'Id da proposta no SalesMachine [C5_ZPNUV]'
                 liberacaoPorItem:
                   type: boolean
                   default: 'false'
+                  description: 'Se a liberação de pedidos acontecerá item a item ou o pedido inteiro (1=Item, 2=Pedido) [C5_TIPLIB]'
                 quantExata:
                   type: boolean
                   default: 'false'
+                  description: 'Quantidade exata sim/não (utilizada em ponto de entrada para conversão entre rolos e milheiros de etiquetas) [C5_QEXAT]'
                 obsInterna:
                   type: string
+                  description: 'Observação interna no pedido [C5_OBSI]'
                 obsDANFE:
                   type: string
+                  description: 'Observação para DANFE [C5_OBSNT]'
                 mensagemNF:
                   type: string
+                  description: 'Mensagem na NF [C5_MENNOTA]'
                 itens:
                   type: array
                   items:
@@ -600,42 +641,63 @@ paths:
                     properties:
                       numero:
                         type: string
+                        example: '01'
+                        description: 'Número sequencial do item [C6_ITEM]'
                       produto:
                         type: object
+                        description: Dados do produto selecionado
                         required:
                           - codigo
                         properties:
                           codigo:
                             type: string
+                            description: 'Código do produto [C6_PRODUTO]'
+                            example: '005599'
                       quantidade:
                         type: string
+                        description: 'Quantidade de venda [C6_QTDVEN]'
+                        example: '12.5'
                       precoUnitario:
                         type: string
+                        description: 'Preço unitário aplicado nesta venda [C6_PRCVEN]'
+                        example: '52.79'
                       TES:
                         type: string
-                      unidadeMedida:
-                        type: string
+                        example: '748'
+                        description: 'Código do TES (recomenda-se obtê-lo através da API de TES inteligente, a partir dos dados do produto e do cliente) [C6_TES]'
                       armazem:
                         type: string
                         default: '01'
+                        description: 'Código do armazém de onde deve ser separado o produto [C6_LOCAL]'
+                        example: '01'
                       quoting:
                         type: object
+                        description: 'Dados relacionados a quoting/bloqueio (por margem, por frete gratuito, ...)'
                         properties:
                           bloqueado:
                             type: boolean
                             default: 'false'
+                            description: 'Se o item do pedido deve nascer bloqueado [C6_BLQ]'
                           tipoBloqueio:
                             type: string
+                            description: 'Tipo de bloqueio aplicado ao item [C6_ZTBL]'
+                            example: SIM
                           freteGratuito:
                             type: boolean
                             default: 'false'
+                            description: 'Se o bloqueio é por frete gratuito (dado redundante, porém exposto para que a API não entre no mérito da regra) [C6_ZGRA]'
                       comissoes:
                         type: object
+                        description: Dados de comissionamento de vendedores
                         properties:
                           vendedor1:
                             type: number
+                            description: 'Percentual de comissão aplicado sobre o valor de venda deste item em favor do vendedor 1 [C6_COMIS]'
+                            example: '3,6'
                           vendedor2:
                             type: number
+                            description: Percentual de comissão aplicado sobre o valor de venda deste item em favor do vendedor 2
+                            example: '0,5'
                     required:
                       - numero
                       - produto
@@ -649,7 +711,7 @@ paths:
                 - contato
                 - moeda
                 - pagamento
-                - intermediacao
+                - frete
                 - vendedor1
                 - liberacaoPorItem
                 - itens
