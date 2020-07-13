@@ -273,10 +273,10 @@ paths:
                     UF:
                       type: string
                       example: RS
-                      description: 'Sigla do estado do cliente, com 2 letras [A1__EST],   [A1__ESTADO]'
+                      description: "Sigla do estado do cliente, com 2 letras [A1\\_EST],   [A1\\_ESTADO]"
                     codigoMunicipio:
                       type: string
-                      description: 'Código do município conforme cadastro do IBGE [A1__COD__MUN]'
+                      description: "Código do município conforme cadastro do IBGE [A1\\_COD\\_MUN]"
                       example: '14902'
                     CEP:
                       type: string
@@ -289,24 +289,25 @@ paths:
                     - email
                     - DDD
                     - telefone
+                  description: Dados de contato do cliente
                   properties:
                     nome:
                       type: string
-                      description: Dados de contato do cliente
+                      description: 'Nome da pessoa de contato principal [A1_NCONT]'
                     email:
                       type: string
-                      description: 'Nome da pessoa de contato principal [A1_NCONT]'
+                      description: 'E-mail para envio de NF-e [A1_EMAIL]'
                     DDD:
                       type: string
-                      description: 'E-mail para envio de NF-e [A1_EMAIL]'
+                      description: 'DDD do número de contato [A1_DDD]'
                       example: '51'
                     telefone:
                       type: string
-                      description: 'DDD do número de contato [A1_DDD]'
+                      description: 'Telefone de contato [A1_TEL]'
                       example: '995965533, 9.596-5533, ...'
                 financeiro:
                   type: object
-                  description: 'Telefone de contato [A1_TEL]'
+                  description: Dados de cadastro financeiro
                   required:
                     - natureza
                   properties:
@@ -394,6 +395,17 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetornoSemNumeracaoAutomatica'
+              examples:
+                Sucesso:
+                  value:
+                    resultCode: '000'
+                    resultMessage: Rotina automática executada com sucesso.
+        '409':
+          description: Conflict
       description: 'Altera um cliente (tabela SA1) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.'
       requestBody:
         content:
@@ -407,8 +419,43 @@ paths:
                   type: string
                 loja:
                   type: string
-                '':
-                  type: string
+                endereco:
+                  type: object
+                  description: Dados componentes do endereço do cliente
+                  properties:
+                    endereco:
+                      type: string
+                      description: 'Endereço do cliente contendo rua, número [A1_END]'
+                    complemento:
+                      type: string
+                      description: 'Dados complementares do endereço [A1_COMPLEM]'
+                    bairro:
+                      type: string
+                      description: 'Nome do bairro [A1_BAIRRO]'
+                    codigoMunicipio:
+                      type: string
+                      description: "Código do município conforme cadastro do IBGE [A1\\_COD\\_MUN]"
+                    CEP:
+                      type: string
+                      description: 'CEP do cliente (somente dígitos) [A1_CEP]'
+                contato:
+                  type: object
+                  description: Dados de contato do cliente
+                  properties:
+                    nome:
+                      type: string
+                      description: 'Nome da pessoa de contato principal [A1_NCONT]'
+                    email:
+                      type: string
+                      description: 'E-mail para envio de NF-e [A1_EMAIL]'
+                    DDD:
+                      type: string
+                      description: 'DDD do número de contato [A1_DDD]'
+                    telefone:
+                      type: string
+                      description: 'Telefone do contato [A1_TEL]'
+              required:
+                - ambiente
         description: Corpo da requisição informando os dados do cliente a ser alterado.
 components:
   schemas:
