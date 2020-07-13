@@ -20,6 +20,7 @@ tags:
   - name: Ordem de produção
   - name: Pedido de venda
   - name: Modelos
+  - name: Models
 x-stoplight:
   docs:
     showModels: false
