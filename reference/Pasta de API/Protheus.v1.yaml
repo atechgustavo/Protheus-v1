@@ -19,6 +19,10 @@ tags:
   - name: Cliente
   - name: Ordem de produção
   - name: Pedido de venda
+  - name: Modelos
+x-stoplight:
+  docs:
+    showModels: false
 paths:
   /OrdemProducao/Criar:
     parameters: []
@@ -693,11 +697,11 @@ paths:
                           vendedor1:
                             type: number
                             description: 'Percentual de comissão aplicado sobre o valor de venda deste item em favor do vendedor 1 [C6_COMIS]'
-                            example: '3,6'
+                            example: 3.6
                           vendedor2:
                             type: number
                             description: Percentual de comissão aplicado sobre o valor de venda deste item em favor do vendedor 2
-                            example: '0,5'
+                            example: 0.5
                     required:
                       - numero
                       - produto
@@ -733,7 +737,7 @@ components:
         filial:
           type: string
           example: '01'
-          description: Códi da filial
+          description: Código da filial
       required:
         - empresa
         - filial
