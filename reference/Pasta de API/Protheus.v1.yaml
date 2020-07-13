@@ -457,6 +457,156 @@ paths:
               required:
                 - ambiente
         description: Corpo da requisição informando os dados do cliente a ser alterado.
+      tags:
+        - Cliente
+  /PedidoVenda/Criar:
+    post:
+      summary: Incluir pedido de venda
+      operationId: post-PedidoVenda-Criar
+      responses:
+        '200':
+          description: OK
+      description: 'Inclui um pedido de venda (tabela SC5) com diversos itens (tabela SC6) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                empresa:
+                  type: string
+                  description: Código da empresa para login no Protheus
+                  example: '01'
+                filial:
+                  type: string
+                  description: Código da filial para login no Protheus
+                  example: '01'
+                cliente:
+                  type: object
+                  description: Dados do cliente do pedido
+                  required:
+                    - codigo
+                    - loja
+                  properties:
+                    codigo:
+                      type: string
+                      description: 'Código do cliente [C5_CLIENTE]'
+                      example: '000329'
+                    loja:
+                      type: string
+                      description: 'Loja do cliente [C5_LOJACLI]'
+                      example: '001'
+                contato:
+                  type: object
+                  description: Dados da pessoa de contato dentro do cliente para este pedido
+                  required:
+                    - nome
+                  properties:
+                    nome:
+                      type: string
+                      description: 'Nome do contato [C5_ZCON]'
+                      example: FULANO DE TAL
+                    email:
+                      type: string
+                    DDD:
+                      type: string
+                    telefone1:
+                      type: string
+                    telefone2:
+                      type: string
+                moeda:
+                  type: string
+                pagamento:
+                  type: object
+                  properties:
+                    codicao:
+                      type: string
+                    forma:
+                      type: string
+                intermediacao:
+                  type: boolean
+                frete:
+                  type: object
+                  properties:
+                    tipo:
+                      type: string
+                    valor:
+                      type: string
+                    transportadora:
+                      type: string
+                    tipoServico:
+                      type: string
+                    intelipost:
+                      type: object
+                      properties:
+                        idCotacao:
+                          type: string
+                        idMetodoEnveio:
+                          type: string
+                vendedor1:
+                  type: string
+                vendedor2:
+                  type: string
+                propostaSM:
+                  type: string
+                liberacaoPorItem:
+                  type: boolean
+                quantExata:
+                  type: boolean
+                obsInterna:
+                  type: string
+                obsDANFE:
+                  type: string
+                mensagemNF:
+                  type: string
+                itens:
+                  type: array
+                  items:
+                    type: object
+                    description: Dados de cada item do pedido
+                    properties:
+                      numero:
+                        type: string
+                      produto:
+                        type: object
+                        properties:
+                          codigo:
+                            type: string
+                      quantidade:
+                        type: string
+                      precoUnitario:
+                        type: string
+                      TES:
+                        type: string
+                      unidadeMedida:
+                        type: string
+                      armazem:
+                        type: string
+                      quoting:
+                        type: object
+                        properties:
+                          bloqueado:
+                            type: boolean
+                          tipoBloqueio:
+                            type: string
+                          freteGratuito:
+                            type: boolean
+                      comissoes:
+                        type: object
+                        properties:
+                          vendedor1:
+                            type: number
+                          vendedor2:
+                            type: number
+              required:
+                - empresa
+                - filial
+                - cliente
+                - contato
+                - itens
+        description: |-
+          Corpo da requisição informando os dados do pedido de venda a ser criado.
+          Diversos campos são alimentados no Protheus embora não sejam parâmetros desta API, já que o Protheus tem diversas definições de valores padrão ou definidos automaticamente por ponto de entrada, gatilho, etc.
 components:
   schemas:
     Ambiente:
