@@ -15,6 +15,10 @@ servers:
     description: HML
   - url: 'http://SRV-INTEGRA:8040.atech.local/services/Protheus/v1'
     description: PROD
+tags:
+  - name: Cliente
+  - name: Ordem de produção
+  - name: Pedido de venda
 paths:
   /OrdemProducao/Criar:
     parameters: []
@@ -113,7 +117,7 @@ paths:
           Corpo da requisição informando os dados da OP a ser criada.
           O método usa como data de emissão (C2_EMISSAO) a data atual do sistema conforme o servidor desta API.
       tags:
-        - Ordens de produção
+        - Ordem de produção
   /OrdemProducao/Excluir:
     parameters: []
     post:
@@ -186,7 +190,7 @@ paths:
                   numero: '057318'
         description: Corpo da requisição identificando a OP a ser excluída.
       tags:
-        - Ordens de produção
+        - Ordem de produção
   /Cliente/Criar:
     post:
       summary: Incluir cliente
@@ -464,8 +468,8 @@ paths:
       summary: Incluir pedido de venda
       operationId: post-PedidoVenda-Criar
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Created
       description: 'Inclui um pedido de venda (tabela SC5) com diversos itens (tabela SC6) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.'
       requestBody:
         content:
@@ -501,6 +505,7 @@ paths:
                   description: Dados da pessoa de contato dentro do cliente para este pedido
                   required:
                     - nome
+                    - email
                   properties:
                     nome:
                       type: string
@@ -508,51 +513,79 @@ paths:
                       example: FULANO DE TAL
                     email:
                       type: string
+                      description: 'E-mail de contato [C5_ZEMA]'
+                      example: FOO@BAR.COM
+                      format: email
                     DDD:
                       type: string
+                      description: 'DDD do contato [C5_ZDD1]'
                     telefone1:
                       type: string
+                      description: 'Telefone de contato 1 [C5_ZTE1]'
                     telefone2:
                       type: string
+                      description: 'Telefone de contato 2 [C5_ZTE2]'
                 moeda:
-                  type: string
+                  type: integer
+                  example: 1
+                  default: 1
+                  description: '1=R$, 2=U$ [C5_MOEDA]'
                 pagamento:
                   type: object
+                  description: Dados referentes a pagamento
+                  required:
+                    - codicao
                   properties:
                     codicao:
                       type: string
+                      default: '013'
+                      description: 'Código da condição de pagamento [C5_CONDPAG]'
                     forma:
                       type: string
+                      description: 'Forma de pagamento (1=Boleto) [C5_FORMA]'
                 intermediacao:
                   type: boolean
+                  description: 'Se é um pedido de intermediação (pedido agenciado), 1=Externo, 2=Interno [C5_EXTERNO]'
                 frete:
                   type: object
+                  description: Dados de frete
                   properties:
                     tipo:
                       type: string
+                      description: 'Tipo de frete: ""=Sem frete, C=CIF, F=FOB'
                     valor:
                       type: string
+                      default: '0.0'
+                      description: "Valor de frete cobrado do cliente \n[C5_FRETE]"
                     transportadora:
                       type: string
+                      description: 'Código da transportadora [C5_TRANSP]'
                     tipoServico:
                       type: string
+                      description: 'Tipo de serviço selecionado na transportadora [C5_TSRV]'
                     intelipost:
                       type: object
+                      description: Dados referentes ao uso da plataforma de gestão de frete Intelipost
                       properties:
                         idCotacao:
                           type: string
-                        idMetodoEnveio:
+                          description: Id da cotação realizada no Intelipiost
+                        idMetodoEnvio:
                           type: string
+                          description: Id do método de envio selecionado no Intelipost
                 vendedor1:
                   type: string
                 vendedor2:
                   type: string
                 propostaSM:
                   type: string
+                  default: '-1'
                 liberacaoPorItem:
                   type: boolean
+                  default: 'false'
                 quantExata:
                   type: boolean
+                  default: 'false'
                 obsInterna:
                   type: string
                 obsDANFE:
@@ -569,6 +602,8 @@ paths:
                         type: string
                       produto:
                         type: object
+                        required:
+                          - codigo
                         properties:
                           codigo:
                             type: string
@@ -582,15 +617,18 @@ paths:
                         type: string
                       armazem:
                         type: string
+                        default: '01'
                       quoting:
                         type: object
                         properties:
                           bloqueado:
                             type: boolean
+                            default: 'false'
                           tipoBloqueio:
                             type: string
                           freteGratuito:
                             type: boolean
+                            default: 'false'
                       comissoes:
                         type: object
                         properties:
@@ -598,15 +636,28 @@ paths:
                             type: number
                           vendedor2:
                             type: number
+                    required:
+                      - numero
+                      - produto
+                      - quantidade
+                      - precoUnitario
+                      - TES
               required:
                 - empresa
                 - filial
                 - cliente
                 - contato
+                - moeda
+                - pagamento
+                - intermediacao
+                - vendedor1
+                - liberacaoPorItem
                 - itens
         description: |-
           Corpo da requisição informando os dados do pedido de venda a ser criado.
           Diversos campos são alimentados no Protheus embora não sejam parâmetros desta API, já que o Protheus tem diversas definições de valores padrão ou definidos automaticamente por ponto de entrada, gatilho, etc.
+      tags:
+        - Pedido de venda
 components:
   schemas:
     Ambiente:
