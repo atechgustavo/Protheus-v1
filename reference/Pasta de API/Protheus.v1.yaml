@@ -384,9 +384,32 @@ paths:
         description: |-
           Corpo da requisição informando os dados do cliente a ser cadastrado.
           Diversos campos são alimentados no Protheus embora não sejam parâmetros desta API, já que o Protheus tem diversas definições de valores padrão ou definidos automaticamente por ponto de entrada, gatilho, etc.
-      description: 'Cria um cliente (tabela SA1) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.'
+      description: "Cria um cliente (tabela SA1) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.\nEsta API determina automaticamente código (A1\\_COD) e loja (A1\\_LOJA) com base no CGC especificado. Se a raiz de CNPJ já existe para outro cliente no cadastrado, é utilizado o mesmo código e incrementada a loja. Do contrário, é gerado novo código sequencial e a loja é 001."
       tags:
         - Cliente
+  /Cliente/Alterar:
+    post:
+      summary: Alterar cliente
+      operationId: post-Cliente-Alterar
+      responses:
+        '200':
+          description: OK
+      description: 'Altera um cliente (tabela SA1) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ambiente:
+                  $ref: '#/components/schemas/Ambiente'
+                codigo:
+                  type: string
+                loja:
+                  type: string
+                '':
+                  type: string
+        description: Corpo da requisição informando os dados do cliente a ser alterado.
 components:
   schemas:
     Ambiente:
