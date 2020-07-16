@@ -70,10 +70,10 @@ paths:
               properties:
                 empresa:
                   type: string
-                  description: 'Formato "01"'
+                  description: Formato "01"
                 filial:
                   type: string
-                  description: 'Formato "01" (C2_FILIAL)'
+                  description: Formato "01" (C2_FILIAL)
                 codigoProduto:
                   type: string
                   description: Código do produto no cadastro Protheus (C2_PRODUTO)
@@ -163,10 +163,10 @@ paths:
               properties:
                 empresa:
                   type: string
-                  description: 'Formato "01"'
+                  description: Formato "01"
                 filial:
                   type: string
-                  description: 'Formato "01" (C2_FILIAL)'
+                  description: Formato "01" (C2_FILIAL)
                 numero:
                   type: string
                   description: Número da OP com 6 dígitos (C2_NUM)
@@ -282,10 +282,10 @@ paths:
                     UF:
                       type: string
                       example: RS
-                      description: "Sigla do estado do cliente, com 2 letras [A1\\_EST],   [A1\\_ESTADO]"
+                      description: 'Sigla do estado do cliente, com 2 letras [A1\_EST],   [A1\_ESTADO]'
                     codigoMunicipio:
                       type: string
-                      description: "Código do município conforme cadastro do IBGE [A1\\_COD\\_MUN]"
+                      description: 'Código do município conforme cadastro do IBGE [A1\_COD\_MUN]'
                       example: '14902'
                     CEP:
                       type: string
@@ -396,7 +396,9 @@ paths:
         description: |-
           Corpo da requisição informando os dados do cliente a ser cadastrado.
           Diversos campos são alimentados no Protheus embora não sejam parâmetros desta API, já que o Protheus tem diversas definições de valores padrão ou definidos automaticamente por ponto de entrada, gatilho, etc.
-      description: "Cria um cliente (tabela SA1) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.\nEsta API determina automaticamente código (A1\\_COD) e loja (A1\\_LOJA) com base no CGC especificado. Se a raiz de CNPJ já existe para outro cliente no cadastrado, é utilizado o mesmo código e incrementada a loja. Do contrário, é gerado novo código sequencial e a loja é 001."
+      description: |-
+        Cria um cliente (tabela SA1) no Protheus, através da API SyncMessage do AtechESB e da API AtechExecAuto no Protheus.
+        Esta API determina automaticamente código (A1\_COD) e loja (A1\_LOJA) com base no CGC especificado. Se a raiz de CNPJ já existe para outro cliente no cadastrado, é utilizado o mesmo código e incrementada a loja. Do contrário, é gerado novo código sequencial e a loja é 001.
       tags:
         - Cliente
   /Cliente/Alterar:
@@ -445,10 +447,14 @@ paths:
                       description: 'Nome do bairro [A1_BAIRRO]'
                     codigoMunicipio:
                       type: string
-                      description: "Código do município conforme cadastro do IBGE [A1\\_COD\\_MUN]"
+                      description: 'Código do município conforme cadastro do IBGE [A1\_COD\_MUN]'
                     CEP:
                       type: string
                       description: 'CEP do cliente (somente dígitos) [A1_CEP]'
+                    UF:
+                      type: string
+                      description: 'Sigla do estado do cliente, com 2 letras  [A1\_ESTADO] (Somente aqui para alimentar este campo que fica vazio em clientes cadastrados via SmartClient. Alimentar com a UF atual, sem alteração.)'
+                      example: RS
                 contato:
                   type: object
                   description: Dados de contato do cliente
@@ -590,7 +596,9 @@ paths:
                     valor:
                       type: string
                       default: '0.0'
-                      description: "Valor de frete cobrado do cliente \n[C5_FRETE]"
+                      description: |-
+                        Valor de frete cobrado do cliente 
+                        [C5_FRETE]
                     transportadora:
                       type: string
                       description: 'Código da transportadora [C5_TRANSP]'
