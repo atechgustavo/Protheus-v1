@@ -224,9 +224,11 @@ paths:
                 nome:
                   type: string
                   description: 'Nome ou razão social do cliente [A1_NOME]'
+                  maxLength: 40
                 nomeReduzido:
                   type: string
                   description: 'Nome fantasia ou nome reduzido pelo qual o cliente é mais conhecido dentro da empresa [A1_NREDUZ]'
+                  maxLength: 20
                 pessoa:
                   type: string
                   description: 'Tipo de pessoa: (F)ísica ou (J)urídica [A1_PESSOA]'
@@ -271,6 +273,7 @@ paths:
                       type: string
                       description: 'Endereço do cliente contendo rua, número [A1_END]'
                       example: 'AV. JOAO INACIO, 1110'
+                      maxLength: 40
                     complemento:
                       type: string
                       example: 'BLOCO 7, SALA 102'
@@ -293,12 +296,12 @@ paths:
                       description: 'CEP do cliente (somente dígitos) [A1_CEP]'
                 contato:
                   type: object
+                  description: Dados de contato do cliente
                   required:
                     - nome
                     - email
                     - DDD
                     - telefone
-                  description: Dados de contato do cliente
                   properties:
                     nome:
                       type: string
@@ -439,6 +442,7 @@ paths:
                     endereco:
                       type: string
                       description: 'Endereço do cliente contendo rua, número [A1_END]'
+                      maxLength: 40
                     complemento:
                       type: string
                       description: 'Dados complementares do endereço [A1_COMPLEM]'
@@ -455,6 +459,7 @@ paths:
                       type: string
                       description: 'Sigla do estado do cliente, com 2 letras  [A1\_ESTADO] (Somente aqui para alimentar este campo que fica vazio em clientes cadastrados via SmartClient. Alimentar com a UF atual, sem alteração.)'
                       example: RS
+                      maxLength: 2
                 contato:
                   type: object
                   description: Dados de contato do cliente
