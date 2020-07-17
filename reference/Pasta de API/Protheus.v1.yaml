@@ -733,6 +733,99 @@ paths:
                 - vendedor1
                 - liberacaoPorItem
                 - itens
+            examples:
+              Exemplo completo:
+                value:
+                  empresa: '01'
+                  filial: '01'
+                  cliente:
+                    codigo: '000329'
+                    loja: '001'
+                  contato:
+                    nome: FULANO
+                    email: a@b.org
+                    DDD: '51'
+                    telefone1: '2345678'
+                    telefone2: TANAHORADEMOLHAROBISCOITO
+                  moeda: 1
+                  pagamento:
+                    condicao: '013'
+                    forma: '1'
+                  intermediacao: false
+                  frete:
+                    tipo: C
+                    valor: 17.54
+                    transportadora: '000008'
+                    tipoServico: CORREIOS 41068-PAC
+                    intelipost:
+                      idCotacao: '94567820098543'
+                      idMetodoEnvio: '1'
+                  vendedor1: '000001'
+                  vendedor2: '000501'
+                  propostaSM: '-1'
+                  liberacaoPorItem: false
+                  quantExata: false
+                  obsInterna: Observação interna no pedido
+                  obsDANFE: Observação para DANFE
+                  mensagemNF: Mensagem na NF
+                  itens:
+                    - numero: '01'
+                      produto:
+                        codigo: '007777'
+                      quantidade: 20
+                      precoUnitario: 50
+                      TES: '748'
+                      armazem: '01'
+                      quoting:
+                        bloqueado: false
+                        tipoBloqueio: ''
+                        freteGratuito: false
+                      comissoes:
+                        vendedor1: 2
+                        vendedor2: 0.5
+                    - numero: '02'
+                      produto:
+                        codigo: '008888'
+                      quantidade: 10
+                      precoUnitario: 55
+                      TES: '748'
+                      quoting:
+                        bloqueado: true
+                        tipoBloqueio: SIM
+                        freteGratuito: true
+                      comissoes:
+                        vendedor1: 2
+                        vendedor2: 0.5
+              Exemplo mínimo:
+                value:
+                  empresa: '01'
+                  filial: '01'
+                  cliente:
+                    codigo: '000329'
+                    loja: '001'
+                  contato:
+                    nome: FULANO
+                    email: a@b.org
+                  moeda: 1
+                  pagamento:
+                    condicao: '013'
+                  frete:
+                    tipo: C
+                  vendedor1: '000001'
+                  liberacaoPorItem: false
+                  itens:
+                    - numero: '01'
+                      produto:
+                        codigo: '007777'
+                      quantidade: 20
+                      precoUnitario: 50
+                      TES: '748'
+                    - numero: '02'
+                      produto:
+                        codigo: '008888'
+                      quantidade: 10
+                      precoUnitario: 55
+                      TES: '748'
         description: |-
           Corpo da requisição informando os dados do pedido de venda a ser criado.
           Diversos campos são alimentados no Protheus embora não sejam parâmetros desta API, já que o Protheus tem diversas definições de valores padrão ou definidos automaticamente por ponto de entrada, gatilho, etc.
