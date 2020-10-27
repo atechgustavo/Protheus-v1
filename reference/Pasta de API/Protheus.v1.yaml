@@ -201,18 +201,68 @@ paths:
       summary: Incluir cliente
       operationId: post-Cliente-Criar
       responses:
-        '200':
-          description: Cliente cadastrado com nova loja a código pré-existente
+        '201':
+          description: Cliente cadastrado com novo código ou com nova loja e código pré-existente
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Retorno da API baseada no AtechExecAuto
+                properties:
+                  resultCode:
+                    type: string
+                    description: Código de resultado conforme tabela de resultados possíveis (vide documentação AtechExecAuto)
+                  resultMessage:
+                    type: string
+                    description: Mensagem descrevendo o resultado do processo
+                  cliente:
+                    type: object
+                    required:
+                      - codigo
+                      - loja
+                    properties:
+                      codigo:
+                        type: string
+                        minLength: 6
+                        maxLength: 6
+                        example: '000329'
+                        description: 'Código do cliente cadastrado [A1_COD]'
+                      loja:
+                        type: string
+                        example: '001'
+                        minLength: 3
+                        maxLength: 3
+                        description: 'Loja do cliente cadastrado [A1_LOJA]'
+                required:
+                  - resultCode
+                  - resultMessage
+                  - cliente
+              examples:
+                Cliente criado:
+                  value:
+                    resultCode: '000'
+                    resultMessage: Rotina automática executada com sucesso.
+                    cliente:
+                      codigo: '000329'
+                      loja: '001'
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RetornoSemNumeracaoAutomatica'
-        '201':
-          description: Cliente cadastrado com novo código
+        '409':
+          description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RetornoComNumeracaoAutomatica'
+                $ref: '#/components/schemas/RetornoSemNumeracaoAutomatica'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetornoSemNumeracaoAutomatica'
       requestBody:
         content:
           application/json:
@@ -386,7 +436,7 @@ paths:
                     CEP: '99999999'
                   contato:
                     nome: FULANO DE TAL
-                    email: '@'
+                    email: foo@bar.com
                     DDD: '51'
                     telefone: '995965533'
                   financeiro:
@@ -572,9 +622,9 @@ paths:
                   type: object
                   description: Dados referentes a pagamento
                   required:
-                    - codicao
+                    - condicao
                   properties:
-                    codicao:
+                    condicao:
                       type: string
                       default: '013'
                       description: 'Código da condição de pagamento [C5_CONDPAG]'
@@ -599,7 +649,7 @@ paths:
                         - F
                       example: C
                     valor:
-                      type: string
+                      type: number
                       default: '0.0'
                       description: |-
                         Valor de frete cobrado do cliente 
@@ -672,13 +722,13 @@ paths:
                             description: 'Código do produto [C6_PRODUTO]'
                             example: '005599'
                       quantidade:
-                        type: string
+                        type: number
                         description: 'Quantidade de venda [C6_QTDVEN]'
-                        example: '12.5'
+                        example: 12.5
                       precoUnitario:
-                        type: string
+                        type: number
                         description: 'Preço unitário aplicado nesta venda [C6_PRCVEN]'
-                        example: '52.79'
+                        example: 52.79
                       TES:
                         type: string
                         example: '748'
